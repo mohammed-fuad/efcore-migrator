@@ -1,0 +1,22 @@
+<Project>
+
+  <Import Project="..\Directory.Build.props"/>
+
+  <PropertyGroup>
+    <AssemblyVersion>1.0.0</AssemblyVersion>
+    <FileVersion>1.0.0</FileVersion>
+    <PackageVersion>1.0.0</PackageVersion>
+    <IsPackable>True</IsPackable>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>mohammed-fuad</Authors>
+    <Copyright>Copyright 2022 (c) mohammed-fuad. All rights reserved.</Copyright>
+    <Description>Helping package to allow applying entity framework core pending migrations.</Description>
+    <NeutralLanguage>English (United States)</NeutralLanguage>
+    <PackageProjectUrl>https://github.com/mohammed-fuad/efcore-migrator</PackageProjectUrl>
+    <PackageTags>efcore;migration</PackageTags>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/mohammed-fuad/efcore-migrator</RepositoryUrl>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+  </PropertyGroup>
+
+</Project>
