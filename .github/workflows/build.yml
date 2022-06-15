@@ -6,7 +6,6 @@ on:
       - 'src/**'
       - 'test/**'
       - 'samples/**'
-      - 'Directory.Build.props'
       - '**/build.yml'
     branches:
       - master
@@ -15,27 +14,50 @@ on:
       - 'src/**'
       - 'test/**'
       - 'samples/**'
-      - 'Directory.Build.props'
       - '**/build.yml'
   workflow_dispatch:
 
 jobs:
-  publish:
-    name: Build and Publish NuGets
+  build:
+    name: Build and run unit test
     timeout-minutes: 60
     strategy:
-      # max-parallel: 2
       matrix:
-        os: ['ubuntu-latest']
+        os: [ 'ubuntu-latest' ]
+        dotnet: [ '6.0.x' ]
     runs-on: ${{ matrix.os }}
-#    if: github.ref == 'refs/heads/master' && success()
     steps:
       - name: Check out code
         uses: actions/checkout@v2
       - name: Install .NET Core SDK
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: '6.0.x'
+          dotnet-version: ${{ matrix.dotnet }}
+      - name: Clean
+        run: dotnet clean ./src --configuration Release
+      - name: Build
+        run: dotnet build ./src --configuration Release
+      - name: Test
+        run: dotnet test ./src --configuration Release --no-restore --no-build -l trx --verbosity normal
+
+  publish:
+    name: Build and Publish NuGets
+    timeout-minutes: 60
+    strategy:
+      matrix:
+        os: ['ubuntu-latest']
+        dotnet: [ '6.0.x' ]
+    runs-on: ${{ matrix.os }}
+    needs:
+      - build
+    if: github.ref == 'refs/heads/master' && success()
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+      - name: Install .NET Core SDK
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: ${{ matrix.dotnet }}
       - name: Clean
         run: dotnet clean ./src --configuration Release
       - name: Build
@@ -43,11 +65,6 @@ jobs:
       - name: Test
         run: dotnet test ./src --configuration Release --no-restore --no-build -l trx --verbosity normal
       - name: Pack
-        run: dotnet pack ./src --no-build --configuration Release --output ./artifacts
-#      - name: PushNuget
-#        run: dotnet nuget push ./artifacts/*.nupkg --source ${{secrets.NUGET_API_URL}} --api-key ${{secrets.NUGET_API_KEY}} --skip-duplicate
-#      - name: Artifacts
-#        uses: actions/upload-artifact@v2
-#        with:
-#          name: artifacts
-#          path: artifacts/**/*
+        run: dotnet pack ./src --no-build --configuration Release --output .
+      - name: PushNuget
+        run: dotnet nuget push *.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_API_KEY}} --skip-duplicate
