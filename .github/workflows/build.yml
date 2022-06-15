@@ -45,7 +45,7 @@ jobs:
     timeout-minutes: 60
     strategy:
       matrix:
-        os: ['ubuntu-latest']
+        os: [ 'ubuntu-latest' ]
         dotnet: [ '6.0.x' ]
     runs-on: ${{ matrix.os }}
     needs:

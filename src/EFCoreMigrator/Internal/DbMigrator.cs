@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 internal class DbMigrator<TContext> : IDbMigrator<TContext>
     where TContext : DbContext
 {
-    private readonly ILogger logger;
+    private readonly ILogger<DbMigrator<TContext>> logger;
     private readonly TContext dbContext;
 
     /// <summary>
@@ -18,7 +18,7 @@ internal class DbMigrator<TContext> : IDbMigrator<TContext>
     /// </summary>
     /// <param name="logger">The instance of <see cref="ILogger"/>.</param>
     /// <param name="dbContext">The instance of <typeparamref name="TContext" />.</param>
-    public DbMigrator(ILogger logger, TContext dbContext)
+    public DbMigrator(ILogger<DbMigrator<TContext>> logger, TContext dbContext)
     {
         this.logger = logger;
         this.dbContext = dbContext;
